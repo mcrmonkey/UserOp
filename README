@@ -1,0 +1,29 @@
+"UserOP"
+
+This is a script intended to make basic user administration on a samba easier.
+
+
+Firstly...
+	I Apologies for my coding. I know it isnt even close to "good"
+
+
+The script:
+	The script is basically a wrapper for "useradd" "passwd" and "smbpasswd".
+	it is intended to make the addition, removal and changes of user passwords "simple".
+	The script is written for use with bash
+
+	
+
+
+Its beginnings:
+	The script
+		was written to make it easy for someone who doesn't know linux to add, remove and edit user account details on a linux server with a simple default samba installation.
+		was designed for a Debian based distro of linux, but it should be easy enough adjust for other linux distrobutions. i've attempted to make the script easier to change by adding a few default values to the top of the script.
+
+
+What it does in a bit more detail:
+	If invoked with "add" it will first add the user to the linux system, then add the user to a 'default' group then add the user to the samba password database
+	if invoked with "del" it will delete the user account from the samba user database then remove the user from the system. The users home directory will not be deleted however.
+	if invoked with "pass" the script will modify both the system and samba passwords. As the script was put together in a bit of a rush it will ask the person running the script for the new password 4 times ( new password, verify password )
+
+
