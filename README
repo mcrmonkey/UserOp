@@ -12,7 +12,7 @@ The script:
 	The script is basically a wrapper for "useradd" "passwd" and "smbpasswd".
 	it is intended to make the addition, removal and changes of user passwords "simple".
 	The script is written for use with bash
-
+	It was orginally designed to be run with sudo, Like: sudo userop add newuser
 	
 
 
