@@ -1,9 +1,6 @@
 #!/bin/bash
-
 # "written" by Ant Kenworthy < antkenworthy83@googlemail.com >
 # released under GPL 2
-
-
 
 
 HOMES='/home'
@@ -22,13 +19,20 @@ echo -e "Fail!"
 exit
 }
 
+needusername()
+{
+	echo "I need a username for that"
+        echo "Do userop help for help.."	
+	
+}
+
 
 do_add()
 {
 
 if [ -z $1 ]; then
-        echo "I need a username for that"
-	echo "Do userop help for help.."
+        
+	needusername
         exit
 else
 
@@ -40,7 +44,6 @@ else
 	$USERMOD -G $DEFAULTGRP $1
 	echo -n "To Samba..." && $SMBPASSWD -a $1 && echo -e "Done.\n" || echo -e "FAIL"
 
-	
 fi
 
 }
@@ -50,9 +53,7 @@ do_delete()
 {
 
 if [ -z $1 ]; then
-        echo "I need a username for that"
-        echo "Do userop help for help.."
-
+        needusername
         exit
 else
 	if [ `id -u $1` -gt $MINUID ]; then
@@ -68,9 +69,6 @@ else
                 exit
         fi
 
-
-
-
 fi
 
 
@@ -80,21 +78,16 @@ do_pass()
 {
 
 if [ -z $1 ]; then
-        echo "I need a username for that"
-        echo "Do userop help for help.."
-
+	needusername
         exit
 else
 
 
 	if [ `id -u $1` -gt $MINUID ]; then
-
-
 		echo -e "Changing password for user..\n Sorry, you'll have to type the password 4 times.....\n\n"
 		$PASSWD $1
 		$SMBPASSWD $1
 	else 
-
 		echo -e "No. thats a protected user.\n"
 		exit
 	fi
