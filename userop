@@ -1,7 +1,4 @@
 #!/bin/bash
-# "written" by Ant Kenworthy < antkenworthy83@googlemail.com >
-# released under GPL 2
-
 
 HOMES='/home'
 USERADD='/usr/sbin/useradd'
@@ -13,92 +10,64 @@ PDBEDIT='/usr/bin/pdbedit'
 DEFAULTGRP='Data'
 MINUID=1000
 
-failmessage()
-{
-echo -e "Fail!"
-exit
+failmessage() {
+  echo -e "Fail!"
+  exit
 }
 
-needusername()
-{
-	echo "I need a username for that"
-        echo "Do userop help for help.."	
-	
+needusername() {
+  echo "I need a username for that"
+  echo "Do userop help for help.."	
 }
 
-
-do_add()
-{
-
-if [ -z $1 ]; then
-        
-	needusername
-        exit
-else
-
-
-        echo -e "Adding user...\n\n"
-        echo -n "To the system..." && $USERADD -b $HOMES -m $1 && echo -e "Done.\n" || failmessage
-	echo "..set password for the system... "
-	$PASSWD $1 && echo -e "...Done.\n" || echo -e "FAIL"
-	$USERMOD -G $DEFAULTGRP $1
-	echo -n "To Samba..." && $SMBPASSWD -a $1 && echo -e "Done.\n" || echo -e "FAIL"
-
-fi
-
+do_add() {
+  if [ -z $1 ]; then
+    needusername
+    exit
+  else
+    echo -e "Adding user...\n\n"
+    echo -n "To the system..." && $USERADD -b $HOMES -m $1 && echo -e "Done.\n" || failmessage
+    echo "..set password for the system... "
+    $PASSWD $1 && echo -e "...Done.\n" || echo -e "FAIL"
+    $USERMOD -G $DEFAULTGRP $1
+    echo -n "To Samba..." && $SMBPASSWD -a $1 && echo -e "Done.\n" || echo -e "FAIL"
+  fi
 }
 
-
-do_delete()
-{
-
-if [ -z $1 ]; then
-        needusername
-        exit
-else
-	if [ `id -u $1` -gt $MINUID ]; then
-
-
-	echo -e "Deleting user...\n\n"
-	echo -n "From samba Db.." && $PDBEDIT -x -u $1 && echo -e "Done.\n" || echo -e "Fail!"
-	echo -n "From system.." && $USERDEL $1 && echo -e "Done.\n" || echo -e "Fail!"
-
-	else
-
-                echo -e "No. thats a protected user.\n"
-                exit
-        fi
-
-fi
-
-
+do_delete() {
+  if [ -z $1 ]; then
+    needusername
+    exit
+  else
+    if [ `id -u $1` -gt $MINUID ]; then
+      echo -e "Deleting user...\n\n"
+      echo -n "From samba Db.." && $PDBEDIT -x -u $1 && echo -e "Done.\n" || echo -e "Fail!"
+      echo -n "From system.." && $USERDEL $1 && echo -e "Done.\n" || echo -e "Fail!"
+    else
+      echo -e "No. thats a protected user.\n"
+      exit
+    fi
+  fi
 }
 
-do_pass()
-{
-
-if [ -z $1 ]; then
-	needusername
-        exit
-else
-
-
-	if [ `id -u $1` -gt $MINUID ]; then
-		echo -e "Changing password for user..\n Sorry, you'll have to type the password 4 times.....\n\n"
-		$PASSWD $1
-		$SMBPASSWD $1
-	else 
-		echo -e "No. thats a protected user.\n"
-		exit
-	fi
-
-fi
-
+do_pass() {
+  if [ -z $1 ]; then
+    needusername
+    exit
+  else
+    if [ `id -u $1` -gt $MINUID ]; then
+      echo -e "Changing password for user..\n Sorry, you'll have to type the password 4 times.....\n\n"
+      $PASSWD $1
+      $SMBPASSWD $1
+    else 
+      echo -e "No. thats a protected user.\n"
+      exit
+    fi
+  fi
 }
 
-do_usage()
-{
-cat <<EOF
+do_usage() {
+ cat <<EOF
 
 User Operations:
 
@@ -110,12 +79,10 @@ userop Usage:
 	userop manual		- manual steps information	
 
 EOF
-
 }
 
-do_manual()
-{
-cat <<EOF
+do_manual() {
+  cat <<EOF
 
 User Operations - Manual Steps:
 
@@ -129,41 +96,30 @@ For deleting a user do:
 
 This will not delete the users home directory	
 
-
 For changing a password do:
-
 
 	sudo passwd <username>
 	sudo smbpasswd <username>
 
 
-
-
-
 EOF
 }
 
-
 case "$1" in
   add)
-        do_add $2
-        ;;
+    do_add $2
+    ;;
   del)
-        do_delete $2
-       ;;
+    do_delete $2
+    ;;
   pass)
-	do_pass $2
-        ;;
-
+    do_pass $2
+    ;;
   manual)
-	do_manual
-	;;
-
+    do_manual
+    ;;
   *|help)
-        do_usage
-
-	exit
-        ;;
+    do_usage
+    exit
+    ;;
 esac
-
-
